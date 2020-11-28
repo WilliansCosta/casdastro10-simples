@@ -1,0 +1,151 @@
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<style>
+	body {
+	  background: #28ebeb;
+	  background: -webkit-linear-gradient(to left, #28ebeb, #2cabab);
+	  background: linear-gradient(to left, #28ebeb, #2cabab);
+	  min-height: 100vh;
+	}
+	.text-black {
+	  color:#000;
+	}
+</style>
+
+<script>
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip();
+		var lastID = 1;
+		
+		editando = false;
+		editando_field = null;
+		
+		$('#criar').click(function() {
+			if (editando) {
+				editando_field.find("td:eq(0)").html($('#nome').val());
+				editando_field.find("td:eq(1)").html($('#categoria').val());
+				editando_field.find("td:eq(2)").html($('#preco').val());
+				$('#criar').html('<i class="fa fa-table"></i> Criar');
+				editando = false;
+				editando_field = null;
+			}
+			else {
+				$('#livros').append('<tr>' +
+									'	<th scope="row">' + lastID++ + '</th>' +
+									'	<td>' + $('#nome').val() + '</td>' +
+									'	<td>' + $('#categoria').val() + '</td>' +
+									'	<td>' + $('#preco').val() + '</td>' +
+									'	<td>' +
+									'		<ul class="list-inline m-0">' +
+									'			<li class="list-inline-item">' +
+									'				<button class="editar btn btn-success btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-edit"></i> Editar</button>' +
+									'			</li>' +
+									'			<li class="list-inline-item">' +
+									'				<button class="deletar btn btn-danger btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Deletar"><i class="fa fa-trash"></i> Deletar</button>' +
+									'			</li>' +
+									'		</ul>' +
+									'	</td>' +
+									'</tr>');
+				
+			}
+			$('#nome').val('');
+			$('#categoria').val('');
+			$('#preco').val('');
+		});
+		
+		$(document).on('click', '.editar', function() {
+			$('#criar').html('<i class="fa fa-edit"></i> Atualizar');
+			editando_field = $(this).parent().parent().parent().parent();
+			$('#nome').val(editando_field.find("td:eq(0)").html());
+			$('#categoria').val(editando_field.find("td:eq(1)").html());
+			$('#preco').val(editando_field.find("td:eq(2)").html());
+			
+			editando = true;
+		});
+		
+		$('#calcular').click(function() {
+			var total = 0;
+			$('#livros tr').each(function() {
+				total += parseFloat($(this).find("td:eq(2)").html());
+			});
+			$('#total').html(total);
+		});
+		
+		
+		$(document).on('click', '.deletar', function() {
+			$(this).parent().parent().parent().parent().remove();
+		});
+	});
+</script>
+</head>
+
+<!-- Demo header-->
+<body>
+	<section class="pb-5 header text-center">
+		<div class="container py-5 text-white">
+			<header class="py-5">
+				<h1 class="display-4">Cadastro de Livros</h1>
+				<p class="font-italic mb-1">Escreva o nome, a categoria entre as disponíveis e o preço separado</p>
+			</header>
+
+
+			<div class="row">
+				<div class="mx-auto">
+					<div class="card border-0 shadow">
+						<div class="card-body p-5">
+
+							<!-- Responsive table -->
+							<div class="table-responsive">
+								<table class="table m-0">
+									<thead>
+										<tr>
+											<th scope="col">ID</th>
+											<th scope="col">Nome</th>
+											<th scope="col">Categoria</th>
+											<th scope="col">Preço</th>
+											<th scope="col"></th>
+										</tr>
+									</thead>
+									<tbody id="livros">
+										
+									</tbody>
+									<tfoot>
+										<tr>
+											<th scope="row"></th>
+											<td>
+												<input type="text" id="nome">
+											</td>
+											<td>
+												<input type="text" id="categoria">
+											</td>
+											<td>
+												<input type="number" id="preco" min="0.00" max="10000.00" step="0.01" />
+											</td>
+											<td>
+												<!-- Call to action buttons -->
+												<ul class="list-inline m-0">
+													<li class="list-inline-item">
+														<button id="criar" class="btn btn-primary btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Criar"><i class="fa fa-table"></i> Criar</button>
+													</li>
+												</ul>
+											</td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+							<button id="calcular" class="btn btn-primary btn-sm rounded-0" type="button" data-toggle="tooltip" data-placement="top" title="Calcular Total">Calcular Total</button>
+							<div id="total" class="text-black card-body"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>
